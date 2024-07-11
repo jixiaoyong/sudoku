@@ -5,16 +5,14 @@ defineEmits(['update:modelValue'])
 
 <template>
   <div class="status__difficulty">
-    <span class="status__difficulty-text">Difficulty:&nbsp;&nbsp;</span>
+    <span class="status__difficulty-text">难度:&nbsp;&nbsp;</span>
     <select name="status__difficulty-select" class="status__difficulty-select" :value="modelValue"
-            @input="$emit('update:modelValue', $event.target.value)">
-      <option value="Easy">Easy</option>
-      <option value="Medium">Medium</option>
-      <option value="Hard">Hard</option>
+      @input="$emit('update:modelValue', $event.target.value)">
+      <option value="Easy">简单</option>
+      <option value="Medium">中级</option>
+      <option value="Hard">大师</option>
     </select>
   </div>
 </template>
 
-<style>
-
-</style>
+<style></style>

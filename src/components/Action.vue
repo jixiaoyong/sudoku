@@ -4,7 +4,7 @@ import Svg from './Svg.vue';
 let props = defineProps<{ action: string }>()
 
 const divClass:string = props.action === 'undo' ? "status__action-undo" : props.action === 'erase' ? "status__action-erase" : props.action === 'hint' ? "status__action-hint" : ""
-const pAction:string = props.action === 'undo' ? 'Undo' : props.action === 'erase' ? 'Erase' : props.action === 'hint' ? 'Hint' : ''
+const pAction:string = props.action === 'undo' ? '撤销' : props.action === 'erase' ? '清除' : props.action === 'hint' ? '提示' : ''
 </script>
 
 <template>
