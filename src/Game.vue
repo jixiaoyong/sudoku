@@ -21,6 +21,8 @@ let numbers: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 const temporaryInitArray = ref<string[]>([]);
 const temporarySolvedArray = ref<string[]>([]);
+let errors = ref<{ row: number; col: number; }[]>([]);
+
 [temporaryInitArray.value, temporarySolvedArray.value] = getUniqueSudoku(difficulty.value, difficulty.value)
 
 const InitArray = ref<SudokuContent[]>(SudokuArray(temporaryInitArray.value))
@@ -30,6 +32,59 @@ function newGame() {
   InitArray.value = SudokuArray(temporaryInitArray.value)
   clickIndex.value = 82
   isTimer = ref(true)
+}
+
+// 在你的 checkSudoku 函数中
+function checkSudoku(sudokuArray: SudokuContent[]) {
+  errors.value = [];
+  // 将一维数组转换为二维数组
+  let sudoku: string[][] = [];
+  for (let i = 0; i < 9; i++) {
+    sudoku[i] = sudokuArray.slice(i * 9, (i + 1) * 9).map((item) =>
+      item.content
+    );
+  }
+
+  // 检查行
+  for (let i = 0; i < 9; i++) {
+    const row = new Set();
+    for (let j = 0; j < 9; j++) {
+      const current = sudoku[i][j]
+      if ('0' != current && row.has(current)) {
+        errors.value.push({ row: i, col: j });
+      } else {
+        row.add(current);
+      }
+    }
+  }
+
+  // 检查列
+  for (let j = 0; j < 9; j++) {
+    const col = new Set();
+    for (let i = 0; i < 9; i++) {
+      if ('0' != sudoku[i][j] && col.has(sudoku[i][j])) {
+        errors.value.push({ row: i, col: j });
+      } else {
+        col.add(sudoku[i][j]);
+      }
+    }
+  }
+
+  // 检查小方格
+  for (let block = 0; block < 9; block++) {
+    const box = new Set();
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        const row = Math.floor(block / 3) * 3 + i;
+        const col = (block % 3) * 3 + j;
+        if ('0' != sudoku[row][col] && box.has(sudoku[row][col])) {
+          errors.value.push({ row, col });
+        } else {
+          box.add(sudoku[row][col]);
+        }
+      }
+    }
+  }
 }
 
 onUpdated(() => {
@@ -50,6 +105,9 @@ function numberClick(number: number) {
   if (InitArray.value[clickIndex.value].isLocked === true) {
     InitArray.value[clickIndex.value].content = number.toString()
   }
+
+  checkSudoku(InitArray.value)
+  console.log(errors.value)
 }
 
 function erase() {
@@ -90,7 +148,8 @@ function onClickOverlay() {
                   InitArray[(column - 1) + (9 * (row - 1))].content !== zero && InitArray[(column - 1) + (9 * (row - 1))].isLocked === true ? 'game__cell--userfilled' : '',
                   clickIndex === (column - 1) + (9 * (row - 1)) ? 'game__cell--highlightselected' : '',
                   row === currentRow || column === currentColumn ? 'game__cell--highlightrowcolumn' : '',
-                  InitArray[(column - 1) + (9 * (row - 1))].content === zero ? 'game__cell--invisible' : ''
+                  InitArray[(column - 1) + (9 * (row - 1))].content === zero ? 'game__cell--invisible' : '',
+                  errors.some(error => error.row + 1 === row && error.col === column - 1) ? 'game__cell--error' : ''
                 ]" @click="gameClick((column - 1) + (9 * (row - 1)))">
                   {{ InitArray[(column - 1) + (9 * (row - 1))].content }}
                 </td>
@@ -145,5 +204,11 @@ function onClickOverlay() {
 
 .game__cell--invisible {
   color: #f0f0f0;
+}
+
+.game__cell--error {
+  color: white;
+  background-color: red;
+  font-weight: bold;
 }
 </style>
