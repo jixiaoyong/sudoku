@@ -154,17 +154,17 @@
  }
  
  .game__cell.game__cell--highlightselected {
-   color: var(--color-orange-dark);
+   /* color: var(--color-orange-dark); */
    background-color: var(--color-orange-dark);
  }
  
  .game__cell.game__cell--filled.game__cell--highlightselected {
-   color: var(--color-grey);
+   /* color: var(--color-grey); */
    background-color: var(--color-orange-dark);
  }
  
  .game__cell.game__cell--userfilled.game__cell--highlightselected {
-   color: var(--color-grey-light);
+   /* color: var(--color-grey-light); */
    background-color: var(--color-orange-dark);
  }
  
